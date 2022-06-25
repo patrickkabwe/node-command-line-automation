@@ -95,8 +95,22 @@ const covadata = new CovaDataAPI({
       );
       await fs.unlink(`./reports/${filename}`);
     } else if (options.operation === "orders") {
+      const filename = options.clientId + "_CustomerOrders" + ".json";
       await covadata.getCustomersOrders();
       console.log(chalk.yellow("Customers Orders Found!"));
+      console.log(chalk.blue("Sending email..."));
+      await sendEmail({
+        filename,
+        mailTo: options.emailList,
+        subject: "Customers Cova Data",
+        dataType: "catalogs",
+      });
+      console.log(
+        chalk.yellow(
+          `Email sent to [ ${chalk.green(options.emailList)} ] successfully!`
+        )
+      );
+      await fs.unlink(`./reports/${filename}`);
     } else {
       throw new Error(`Invalid operation: ${options.operation}`);
     }
