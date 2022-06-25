@@ -28,7 +28,7 @@ const sendEmail = async ({ mailTo, subject, dataType, filename }) => {
   });
 
   let info = await transporter.sendMail({
-    from: '"Patrick Kabwe 👻" <patrick@sparknspur.com>', // sender address
+    from: '"Patrick Kabwe" <patrick@sparknspur.com>', // sender address
     to: mailTo, // "bar@example.com, baz@example.com"
     subject, // Subject line
     text: `

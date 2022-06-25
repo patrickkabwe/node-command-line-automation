@@ -15,6 +15,7 @@ const options = yargs(process.argv.slice(2))
     describe: "customers or catalogs",
     type: "string",
     demandOption: true,
+    choices: ["customers", "catalogs"],
   })
   .option("c", {
     alias: "companyId",
@@ -79,14 +80,19 @@ const covadata = new CovaDataAPI({
       );
       await fs.unlink(`./reports/${filename}`);
     } else if (options.operation === "catalogs") {
-      const filename = options.clientId + "_Catalogs" + ".json";
+      const filename = options.clientId + "_CatalogItems" + ".json";
       await covadata.getCatalog();
       await sendEmail({
-        filename: options.clientId + "_Customers" + ".csv",
+        filename: options.clientId + "_CatalogItems" + ".json",
         mailTo: options.emailList,
         subject: "Customers Cova Data",
-        dataType: "customers",
+        dataType: "catalogs",
       });
+      console.log(
+        chalk.yellow(
+          `Email sent to [ ${chalk.green(options.emailList)} ] successfully!`
+        )
+      );
       await fs.unlink(`./reports/${filename}`);
     } else {
       throw new Error(`Invalid operation: ${options.operation}`);

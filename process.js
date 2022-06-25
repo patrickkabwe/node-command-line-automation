@@ -62,24 +62,27 @@ class CovaDataAPI {
         chalk.green(`Catalogs Found: ${chalk.green(catalogs.length)}`)
       );
       console.log(chalk.blueBright("Getting Catalog Item Details...."));
-      const catalogDetails = await Promise.all(
-        catalogs.map(async (catalog) => {
-          return await getCatalogItemDetails({
-            catalogId: catalog.CatalogItemId,
-            companyId,
-            access_token,
-          });
-        })
-      );
-      console.log(
-        chalk.green(
-          `Catalog Item Details Found: ${chalk.green(catalogDetails.length)}`
-        )
-      );
-      await this.createJsonReport(catalogDetails);
+      const catalogDetails = [];
+      for (let catalog of catalogs) {
+        const catalogItem = await getCatalogItemDetails({
+          catalogId: catalog.CatalogItemId,
+          companyId,
+          access_token,
+        });
+        catalogDetails.push(catalogItem);
+        console.log(
+          chalk.green(
+            `Catalog Item Details Found: ${chalk.green(catalogDetails.length)}`
+          )
+        );
+      }
+      await this.createJsonReport({
+        data: catalogDetails,
+        fileName: this.clientId + "_CatalogItems",
+      });
     } catch (error) {
       if (error.isAxiosError) {
-        throw new Error(`Something went wrong! ${error?.response}`);
+        throw new Error(`Something went wrong! ${error?.response.status}`);
       } else {
         throw new Error(`Something went wrong! ${error.message}`);
       }

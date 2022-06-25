@@ -1,5 +1,14 @@
 import axios from "axios";
 import { catalogDetailUrl, customerUrl } from "./constants.js";
+import axiosRetry from "axios-retry";
+
+axiosRetry(axios, {
+  retries: 5, // number of retries
+  retryDelay: (retryCount) => {
+    console.log(`retry attempt: ${retryCount}`);
+    return retryCount * 2000; // time interval between retries
+  },
+});
 
 const getCatalogItems = async ({ access_token, companyId }) => {
   const response = await axios.get(
@@ -35,15 +44,22 @@ const getCatalogItemDetails = async ({
         Accept: "application/json",
         Authorization: `Bearer ${access_token}`,
       },
-      validateStatus: (status) => true,
     }
   );
   if (response.status === 200) {
-    console.log(response.status);
+    // products.push(response.data);
+   
+    // createJsonReport({
+    //   data: products,
+    //   fileName: `${clientId}_CatalogItems.json`,
+    // });
+    
     return response.data;
   } else {
     console.log("Something went wrong!");
     console.log(response.statusText);
+    // 3298
+    return null;
   }
 };
 
