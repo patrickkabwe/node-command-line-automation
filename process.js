@@ -5,6 +5,8 @@ import {
   getAllCustomers,
   getCatalogItemDetails,
   getCatalogItems,
+  getCustomerOrderSummaries,
+  getCustomerOrderSummaryDetails,
 } from "./handlers.js";
 import { convertToCSV } from "./utils.js";
 
@@ -113,6 +115,56 @@ class CovaDataAPI {
       } else {
         throw new Error(`Something went wrong! ${error?.message}`);
       }
+    }
+  }
+
+  async getCustomersOrders() {
+    try {
+      const orders = [];
+      const orderDetails = [];
+      const companyId = this.companyId;
+      const { access_token } = await this.login();
+      const customers = await getAllCustomers({
+        access_token: access_token,
+        companyId,
+      });
+      console.log(
+        chalk.blueBright(`Customers Found: ${chalk.green(customers.length)}`)
+      );
+      for (let customer of customers) {
+        const customerOrders = await getCustomerOrderSummaries({
+          access_token,
+          companyId,
+          customerId: customer.Id,
+        });
+        orders.push(...customerOrders);
+        console.log(
+          chalk.green(`Customer Orders Found: ${chalk.green(orders.length)}`)
+        );
+      }
+      console.log(
+        chalk.blueBright(`Customer Orders Found: ${chalk.green(orders.length)}`)
+      );
+      console.log(chalk.blueBright("Getting Customer Order Details...."));
+      for (let order of orders) {
+        const orderDetail = await getCustomerOrderSummaryDetails({
+          access_token,
+          companyId,
+          invoiceId: order.Id,
+        });
+        orderDetails.push(orderDetail);
+        console.log(
+          chalk.green(
+            `Customer Order Details Found: ${chalk.green(orderDetails.length)}`
+          )
+        );
+      }
+      await this.createJsonReport({
+        data: orderDetails,
+        fileName: this.clientId + "_CustomerOrders",
+      });
+    } catch (error) {
+      console.log(error);
     }
   }
 

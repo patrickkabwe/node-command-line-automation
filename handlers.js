@@ -1,5 +1,10 @@
 import axios from "axios";
-import { catalogDetailUrl, customerUrl } from "./constants.js";
+import {
+  catalogDetailUrl,
+  customerOrderSummaryDetailUrl,
+  customerOrderSummaryUrl,
+  customerUrl,
+} from "./constants.js";
 import axiosRetry from "axios-retry";
 
 axiosRetry(axios, {
@@ -48,12 +53,12 @@ const getCatalogItemDetails = async ({
   );
   if (response.status === 200) {
     // products.push(response.data);
-   
+
     // createJsonReport({
     //   data: products,
     //   fileName: `${clientId}_CatalogItems.json`,
     // });
-    
+
     return response.data;
   } else {
     console.log("Something went wrong!");
@@ -100,4 +105,62 @@ const getAllCustomers = async ({ access_token, companyId }) => {
   }
 };
 
-export { getCatalogItemDetails, getCatalogItems, getAllCustomers };
+const getCustomerOrderSummaries = async ({
+  access_token,
+  companyId,
+  customerId,
+}) => {
+  const response = await axios.get(
+    `${customerOrderSummaryUrl({ companyId, customerId })}`,
+    {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${access_token}`,
+      },
+    }
+  );
+  if (response.status === 200) {
+    console.log(response.data);
+
+    return response.data;
+  } else {
+    console.log("Something went wrong!");
+    console.log(response.statusText);
+  }
+};
+
+const getCustomerOrderSummaryDetails = async ({
+  access_token,
+  companyId,
+  invoiceId,
+}) => {
+  try {
+    const response = await axios.get(
+      `${customerOrderSummaryDetailUrl({ companyId, invoiceId })}`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    );
+    if (response.status === 200) {
+      console.log(response.data);
+
+      return response.data;
+    } else {
+      console.log("Something went wrong!");
+      console.log(response.statusText);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export {
+  getCatalogItemDetails,
+  getCatalogItems,
+  getAllCustomers,
+  getCustomerOrderSummaries,
+  getCustomerOrderSummaryDetails,
+};

@@ -12,10 +12,10 @@ const options = yargs(process.argv.slice(2))
   .usage("Usage: cova [options]")
   .option("o", {
     alias: "operation",
-    describe: "customers or catalogs",
+    describe: "customers | catalogs | orders",
     type: "string",
     demandOption: true,
-    choices: ["customers", "catalogs"],
+    choices: ["customers", "catalogs", "orders"],
   })
   .option("c", {
     alias: "companyId",
@@ -94,6 +94,9 @@ const covadata = new CovaDataAPI({
         )
       );
       await fs.unlink(`./reports/${filename}`);
+    } else if (options.operation === "orders") {
+      await covadata.getCustomersOrders();
+      console.log(chalk.yellow("Customers Orders Found!"));
     } else {
       throw new Error(`Invalid operation: ${options.operation}`);
     }
