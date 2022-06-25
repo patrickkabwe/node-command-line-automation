@@ -8,10 +8,10 @@ import {
 import axiosRetry from "axios-retry";
 
 axiosRetry(axios, {
-  retries: 5, // number of retries
+  retries: 10, // number of retries
   retryDelay: (retryCount) => {
     console.log(`retry attempt: ${retryCount}`);
-    return retryCount * 2000; // time interval between retries
+    return retryCount * 10000; // time interval between retries
   },
 });
 
