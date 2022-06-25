@@ -117,7 +117,7 @@ class CovaDataAPI {
       }
     }
   }
-
+  
   async getCustomersOrders() {
     try {
       const orders = [];
@@ -141,6 +141,9 @@ class CovaDataAPI {
         console.log(
           chalk.green(`Customer Orders Found: ${chalk.green(orders.length)}`)
         );
+        if (orders.length >= 4000) {
+          break;
+        }
       }
       console.log(
         chalk.blueBright(`Customer Orders Found: ${chalk.green(orders.length)}`)

@@ -120,8 +120,6 @@ const getCustomerOrderSummaries = async ({
     }
   );
   if (response.status === 200) {
-    console.log(response.data);
-
     return response.data;
   } else {
     console.log("Something went wrong!");
@@ -145,8 +143,6 @@ const getCustomerOrderSummaryDetails = async ({
       }
     );
     if (response.status === 200) {
-      console.log(response.data);
-
       return response.data;
     } else {
       console.log("Something went wrong!");
