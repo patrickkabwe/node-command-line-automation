@@ -97,9 +97,8 @@ const getAllCustomers = async ({ access_token, companyId }) => {
           customerId: customer.Id,
         });
         customerDetails.push(customerDetail);
-        console.log(customerDetails[0]);
+        console.log("COLLECTED",customerDetails.length);
       }
-      console.log(customerDetails.length);
       return customerDetails;
     } else {
       SKIP += 100;
