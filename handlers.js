@@ -105,7 +105,8 @@ const getAllCustomers = async ({ access_token, companyId }) => {
       });
     }
   }
-  for (let customer of customers) {
+  for (let i = 0; i < customers.length; i++) {
+    const customer = customers[i];
     console.log("Customer:", customers.length);
     const customerDetail = await getCustomerDetails({
       access_token,
@@ -114,11 +115,22 @@ const getAllCustomers = async ({ access_token, companyId }) => {
     });
     customerDetails.push(customerDetail);
     console.log("COLLECTED", customerDetails.length);
-    if(customerDetails.length === customers.length) {
-      console.log("DONE");
-      break
-    }
   }
+  // for (let customer of customers) {
+  //   if (customerDetails.length === 3) {
+  //     console.log("DONE");
+  //     break;
+  //   } else {
+  //     console.log("Customer:", customers.length);
+  //     const customerDetail = await getCustomerDetails({
+  //       access_token,
+  //       companyId,
+  //       customerId: customer.Id,
+  //     });
+  //     customerDetails.push(customerDetail);
+  //     console.log("COLLECTED", customerDetails.length);
+  //   }
+  // }
   return customerDetails;
 };
 
