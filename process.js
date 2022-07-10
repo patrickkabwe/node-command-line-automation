@@ -94,7 +94,7 @@ class CovaDataAPI {
 
   async getCustomers() {
     const customerDetails = [];
-    const newCustomers = []
+    const newCustomers = [];
     try {
       const { access_token } = await this.login();
       const customers = await getAllCustomers({
@@ -102,19 +102,19 @@ class CovaDataAPI {
         companyId: this.companyId,
       });
       for (let customer of customers) {
-        if (customerDetails.length === 3) {
-          console.log("DONE");
-          break;
-        } else {
-          console.log("Customer:", customers.length);
-          const customerDetail = await getCustomerDetails({
-            access_token,
-            companyId: this.companyId,
-            customerId: customer.Id,
-          });
-          customerDetails.push(customerDetail);
-          console.log("COLLECTED", customerDetails.length);
-        }
+        // if (customerDetails.length === customers.length) {
+        //   console.log("DONE");
+        //   break;
+        // } else {
+        console.log("Customer:", customers.length);
+        const customerDetail = await getCustomerDetails({
+          access_token,
+          companyId: this.companyId,
+          customerId: customer.Id,
+        });
+        customerDetails.push(customerDetail);
+        console.log("COLLECTED", customerDetails.length);
+        // }
       }
 
       for (let customer of customerDetails) {
