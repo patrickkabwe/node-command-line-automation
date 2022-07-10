@@ -72,7 +72,6 @@ const getCatalogItemDetails = async ({
 let SKIP = 100;
 let results = null;
 const customers = [];
-const customerDetails = [];
 
 const getAllCustomers = async ({ access_token, companyId }) => {
   let params = new URLSearchParams();
@@ -90,7 +89,7 @@ const getAllCustomers = async ({ access_token, companyId }) => {
   while (continueFetching) {
     if (results === 0) {
       continueFetching = false;
-      break;
+      return customers
     } else {
       SKIP += 100;
       console.log("Customers:", response.request.path);
@@ -105,34 +104,7 @@ const getAllCustomers = async ({ access_token, companyId }) => {
       });
     }
   }
-  for (let i = 0; i < customers.length; i++) {
-    const customer = customers[i];
-    console.log("Customer:", customers.length);
-    console.log("i", i);
-    const customerDetail = await getCustomerDetails({
-      access_token,
-      companyId,
-      customerId: customer.Id,
-    });
-    customerDetails.push(customerDetail);
-    console.log("COLLECTED", customerDetails.length);
-  }
-  // for (let customer of customers) {
-  //   if (customerDetails.length === 3) {
-  //     console.log("DONE");
-  //     break;
-  //   } else {
-  //     console.log("Customer:", customers.length);
-  //     const customerDetail = await getCustomerDetails({
-  //       access_token,
-  //       companyId,
-  //       customerId: customer.Id,
-  //     });
-  //     customerDetails.push(customerDetail);
-  //     console.log("COLLECTED", customerDetails.length);
-  //   }
-  // }
-  return customerDetails;
+
 };
 
 const getCustomerDetails = async ({ access_token, companyId, customerId }) => {
@@ -206,6 +178,7 @@ export {
   getCatalogItemDetails,
   getCatalogItems,
   getAllCustomers,
+  getCustomerDetails,
   getCustomerOrderSummaries,
   getCustomerOrderSummaryDetails,
 };

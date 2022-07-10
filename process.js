@@ -5,6 +5,7 @@ import {
   getAllCustomers,
   getCatalogItemDetails,
   getCatalogItems,
+  getCustomerDetails,
   getCustomerOrderSummaries,
   getCustomerOrderSummaryDetails,
 } from "./handlers.js";
@@ -92,13 +93,29 @@ class CovaDataAPI {
   }
 
   async getCustomers() {
-    const customers = [];
+    const customerDetails = [];
+    const newCustomers = []
     try {
       const { access_token } = await this.login();
-      const customerDetails = await getAllCustomers({
-        access_token: access_token,
+      const customers = await getAllCustomers({
+        access_token,
         companyId: this.companyId,
       });
+      for (let customer of customers) {
+        if (customerDetails.length === 3) {
+          console.log("DONE");
+          break;
+        } else {
+          console.log("Customer:", customers.length);
+          const customerDetail = await getCustomerDetails({
+            access_token,
+            companyId: this.companyId,
+            customerId: customer.Id,
+          });
+          customerDetails.push(customerDetail);
+          console.log("COLLECTED", customerDetails.length);
+        }
+      }
 
       for (let customer of customerDetails) {
         let c = customer?.ContactMethods?.map((contact) => ({
@@ -125,18 +142,18 @@ class CovaDataAPI {
           MergedIntoCustomerId: customer.MergedIntoCustomerId,
           LastModifiedDateUtc: customer.LastModifiedDateUtc,
         }));
-        customers.push(...c);
+        newCustomers.push(...c);
       }
 
       console.log(
-        chalk.blueBright(`Customers Found: ${chalk.green(customers.length)}`)
+        chalk.blueBright(`Customers Found: ${chalk.green(newCustomers.length)}`)
       );
 
       console.log(chalk.blueBright("Creating a CSV report for customers...."));
 
       await this.createCsvReport({
         fileName: this.clientId + "_Customers",
-        jsonObject: customers,
+        jsonObject: newCustomers,
       });
     } catch (error) {
       if (error.isAxiosError) {
