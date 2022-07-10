@@ -92,12 +92,41 @@ class CovaDataAPI {
   }
 
   async getCustomers() {
+    const customers = [];
     try {
       const { access_token } = await this.login();
-      const customers = await getAllCustomers({
+      const customerDetails = await getAllCustomers({
         access_token: access_token,
         companyId: this.companyId,
       });
+
+      for (let customer of customerDetails) {
+        let c = customer?.ContactMethods?.map((contact) => ({
+          Id: customer.Id,
+          Email:
+            contact?.ContactMethodCategory === "Email" ? contact.Value : null,
+          Phone:
+            contact?.ContactMethodCategory === "Phone" ? contact.Value : null,
+          PrimaryName: customer.PrimaryName,
+          Title: customer.Title,
+          AlternateName: customer.AlternateName,
+          MiddleName: customer.MiddleName,
+          FamilyName: customer.FamilyName,
+          ReferralSource: customer.ReferralSource,
+          Notes: customer.Notes,
+          UniqueIdentifier: customer.UniqueIdentifier,
+          CustomerTypeId: customer.CustomerTypeId,
+          CustomerType: customer.CustomerType,
+          DateOfBirth: customer.DateOfBirth,
+          PricingGroupId: customer.PricingGroupId,
+          Disabled: customer.Disabled,
+          DoNotContact: customer.DoNotContact,
+          Version: customer.Version,
+          MergedIntoCustomerId: customer.MergedIntoCustomerId,
+          LastModifiedDateUtc: customer.LastModifiedDateUtc,
+        }));
+        customers.push(...c);
+      }
 
       console.log(
         chalk.blueBright(`Customers Found: ${chalk.green(customers.length)}`)
@@ -117,7 +146,7 @@ class CovaDataAPI {
       }
     }
   }
-  
+
   async getCustomersOrders() {
     try {
       const orders = [];

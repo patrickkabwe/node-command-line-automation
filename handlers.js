@@ -1,6 +1,7 @@
 import axios from "axios";
 import {
   catalogDetailUrl,
+  customerDetailsUrl,
   customerOrderSummaryDetailUrl,
   customerOrderSummaryUrl,
   customerUrl,
@@ -71,6 +72,7 @@ const getCatalogItemDetails = async ({
 let SKIP = 100;
 let results = null;
 const customers = [];
+const customerDetails = [];
 
 const getAllCustomers = async ({ access_token, companyId }) => {
   let params = new URLSearchParams();
@@ -88,7 +90,17 @@ const getAllCustomers = async ({ access_token, companyId }) => {
   while (continueFetching) {
     if (results === 0) {
       continueFetching = false;
-      return customers;
+      for (let customer of customers) {
+        const customerDetail = await getCustomerDetails({
+          access_token,
+          companyId,
+          customerId: customer.Id,
+        });
+        customerDetails.push(customerDetail);
+        console.log(customerDetails[0]);
+      }
+      console.log(customerDetails.length);
+      return customerDetails;
     } else {
       SKIP += 100;
       console.log("Customers:", response.request.path);
@@ -102,6 +114,25 @@ const getAllCustomers = async ({ access_token, companyId }) => {
         companyId,
       });
     }
+  }
+};
+
+const getCustomerDetails = async ({ access_token, companyId, customerId }) => {
+  const response = await axios.get(
+    `${customerDetailsUrl({ companyId, customerId })}`,
+    {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${access_token}`,
+      },
+    }
+  );
+  if (response.status === 200) {
+    console.log("Customer Details:");
+    return response.data;
+  } else {
+    console.log("Something went wrong!");
+    console.log(response.statusText);
   }
 };
 
