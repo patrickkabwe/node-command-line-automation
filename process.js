@@ -102,10 +102,6 @@ class CovaDataAPI {
         companyId: this.companyId,
       });
       for (let customer of customers) {
-        // if (customerDetails.length === customers.length) {
-        //   console.log("DONE");
-        //   break;
-        // } else {
         console.log("Customer:", customers.length);
         const customerDetail = await getCustomerDetails({
           access_token,
@@ -114,7 +110,6 @@ class CovaDataAPI {
         });
         customerDetails.push(customerDetail);
         console.log("COLLECTED", customerDetails.length);
-        // }
       }
 
       for (let customer of customerDetails) {
