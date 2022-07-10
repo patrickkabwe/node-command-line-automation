@@ -108,6 +108,7 @@ const getAllCustomers = async ({ access_token, companyId }) => {
   for (let i = 0; i < customers.length; i++) {
     const customer = customers[i];
     console.log("Customer:", customers.length);
+    console.log("i", i);
     const customerDetail = await getCustomerDetails({
       access_token,
       companyId,
