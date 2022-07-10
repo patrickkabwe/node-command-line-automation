@@ -114,6 +114,10 @@ const getAllCustomers = async ({ access_token, companyId }) => {
     });
     customerDetails.push(customerDetail);
     console.log("COLLECTED", customerDetails.length);
+    if(customerDetails.length === customers.length) {
+      console.log("DONE");
+      break
+    }
   }
   return customerDetails;
 };
