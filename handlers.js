@@ -90,16 +90,7 @@ const getAllCustomers = async ({ access_token, companyId }) => {
   while (continueFetching) {
     if (results === 0) {
       continueFetching = false;
-      for (let customer of customers) {
-        const customerDetail = await getCustomerDetails({
-          access_token,
-          companyId,
-          customerId: customer.Id,
-        });
-        customerDetails.push(customerDetail);
-        console.log("COLLECTED",customerDetails.length);
-      }
-      return customerDetails;
+      break;
     } else {
       SKIP += 100;
       console.log("Customers:", response.request.path);
@@ -114,6 +105,17 @@ const getAllCustomers = async ({ access_token, companyId }) => {
       });
     }
   }
+  for (let customer of customers) {
+    console.log("Customer:", customers.length);
+    const customerDetail = await getCustomerDetails({
+      access_token,
+      companyId,
+      customerId: customer.Id,
+    });
+    customerDetails.push(customerDetail);
+    console.log("COLLECTED", customerDetails.length);
+  }
+  return customerDetails;
 };
 
 const getCustomerDetails = async ({ access_token, companyId, customerId }) => {
